@@ -19,4 +19,7 @@ interface DaftarBelanjaDAO {
 
     @Query("SELECT * FROM DaftarBelanja ORDER BY id ASC")
     fun selectAll() : MutableList<DaftarBelanja>
+
+    @Query("SELECT * FROM DaftarBelanja WHERE id=:isi_id")
+    suspend fun getItem(isi_id: Int): DaftarBelanja
 }
