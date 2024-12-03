@@ -15,6 +15,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private lateinit var DB : DaftarBelanjaDB
@@ -41,6 +42,20 @@ class MainActivity : AppCompatActivity() {
         _fabAdd.setOnClickListener {
             startActivity(Intent(this, TambahDaftarActivity::class.java))
         }
+
+        adapterDaftar.setOnItemClickCallback(object : AdapterDaftar.OnItemClickCallback {
+            override fun delData(dtBelanja: DaftarBelanja) {
+                CoroutineScope(Dispatchers.IO).async {
+                    DB.daftarBelanjaDAO().delete(dtBelanja)
+                    val daftar = DB.daftarBelanjaDAO().selectAll()
+                    withContext(Dispatchers.Main) {
+                        adapterDaftar.isiData(daftar)
+                    }
+                }
+            }
+
+        })
+
     }
 
     override fun onStart() {
