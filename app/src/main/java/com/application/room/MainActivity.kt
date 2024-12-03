@@ -7,6 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.application.room.database.DaftarBelanja
 import com.application.room.database.DaftarBelanjaDB
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
@@ -15,6 +18,8 @@ import kotlinx.coroutines.async
 
 class MainActivity : AppCompatActivity() {
     private lateinit var DB : DaftarBelanjaDB
+    private lateinit var adapterDaftar: AdapterDaftar
+    private var arDaftar: MutableList<DaftarBelanja> = mutableListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -25,8 +30,13 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         DB = DaftarBelanjaDB.getDatabase(this)
+        adapterDaftar = AdapterDaftar(arDaftar)
 
         var _fabAdd = findViewById<FloatingActionButton>(R.id.fabAdd)
+        var _rvDaftar = findViewById<RecyclerView>(R.id.rvDaftar)
+
+        _rvDaftar.layoutManager = LinearLayoutManager(this)
+        _rvDaftar.adapter = adapterDaftar
 
         _fabAdd.setOnClickListener {
             startActivity(Intent(this, TambahDaftarActivity::class.java))
@@ -37,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         CoroutineScope(Dispatchers.Main).async {
             val daftarBelanja = DB.daftarBelanjaDAO().selectAll()
+            adapterDaftar.isiData(daftarBelanja)
             Log.d("data ROOM", daftarBelanja.toString())
         }
     }
