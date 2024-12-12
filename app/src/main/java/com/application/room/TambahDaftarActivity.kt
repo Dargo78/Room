@@ -37,6 +37,7 @@ class TambahDaftarActivity : AppCompatActivity() {
         var _btnUpdate = findViewById<Button>(R.id.btnUpdate)
 
         _btnTambah.setOnClickListener {
+            // Untuk membatalkan update data apabila terjadi kegagalan (kyk db trans commit)
             CoroutineScope(Dispatchers.IO).async {
                 DB.daftarBelanjaDAO().insert(
                     DaftarBelanja(
@@ -64,6 +65,7 @@ class TambahDaftarActivity : AppCompatActivity() {
             _btnUpdate.visibility = View.VISIBLE
             _etItem.isEnabled = false
 
+            // Untuk membatalkan update data apabila terjadi kegagalan (kyk db trans commit)
             CoroutineScope(Dispatchers.IO).async {
                 val item = DB.daftarBelanjaDAO().getItem(iID)
                 _etItem.setText(item.item)
@@ -72,6 +74,7 @@ class TambahDaftarActivity : AppCompatActivity() {
         }
 
         _btnUpdate.setOnClickListener {
+            // Untuk membatalkan update data apabila terjadi kegagalan (kyk db trans commit)
             CoroutineScope(Dispatchers.IO).async {
                 DB.daftarBelanjaDAO().update(
                     isi_tanggal = tanggal,

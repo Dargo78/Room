@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.application.room.database.DaftarBelanja
 import com.application.room.database.DaftarBelanjaDB
+import com.application.room.database.HistoryBelanja
+import com.application.room.database.HistoryBelanjaDAO
+import com.application.room.database.HistoryBelanjaDB
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,9 +21,11 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var DB : DaftarBelanjaDB
+    private lateinit var DB: DaftarBelanjaDB
     private lateinit var adapterDaftar: AdapterDaftar
     private var arDaftar: MutableList<DaftarBelanja> = mutableListOf()
+
+    private lateinit var HistoryDB: HistoryBelanjaDB
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -31,6 +36,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         DB = DaftarBelanjaDB.getDatabase(this)
+        HistoryDB = HistoryBelanjaDB.getDatabase(this)
         adapterDaftar = AdapterDaftar(arDaftar)
 
         var _fabAdd = findViewById<FloatingActionButton>(R.id.fabAdd)
@@ -45,7 +51,26 @@ class MainActivity : AppCompatActivity() {
 
         adapterDaftar.setOnItemClickCallback(object : AdapterDaftar.OnItemClickCallback {
             override fun delData(dtBelanja: DaftarBelanja) {
+                // Untuk membatalkan update data apabila terjadi kegagalan (kyk db trans commit)
                 CoroutineScope(Dispatchers.IO).async {
+                    DB.daftarBelanjaDAO().delete(dtBelanja)
+                    val daftar = DB.daftarBelanjaDAO().selectAll()
+                    withContext(Dispatchers.Main) {
+                        adapterDaftar.isiData(daftar)
+                    }
+                }
+            }
+
+            override fun moveData(dtBelanja: DaftarBelanja) {
+                CoroutineScope(Dispatchers.IO).async {
+//                    val historyBelanja = HistoryBelanja(
+//                        tanggal = dtBelanja.tanggal,
+//                        item = dtBelanja.item,
+//                        jumlah = dtBelanja.jumlah
+//                    )
+                    CoroutineScope(Dispatchers.IO).async {
+                        HistoryDB.historyBelanjaDAO().insert(dtBelanja)
+                    }
                     DB.daftarBelanjaDAO().delete(dtBelanja)
                     val daftar = DB.daftarBelanjaDAO().selectAll()
                     withContext(Dispatchers.Main) {
@@ -56,10 +81,16 @@ class MainActivity : AppCompatActivity() {
 
         })
 
+        var _fabHistory = findViewById<FloatingActionButton>(R.id.fabHistory)
+        _fabHistory.setOnClickListener {
+            startActivity(Intent(this, HistoryDaftarActivity::class.java))
+        }
+
     }
 
     override fun onStart() {
         super.onStart()
+        // Untuk membatalkan update data apabila terjadi kegagalan (kyk db trans commit)
         CoroutineScope(Dispatchers.Main).async {
             val daftarBelanja = DB.daftarBelanjaDAO().selectAll()
             adapterDaftar.isiData(daftarBelanja)

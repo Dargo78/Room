@@ -6,9 +6,9 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/tvTanggal"
@@ -30,7 +30,6 @@
             android:text="Item Barang"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/btnEdit"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTanggal" />
@@ -44,41 +43,6 @@
             android:text="10"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvItemBarang" />
-
-        <ImageButton
-            android:id="@+id/btnEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:backgroundTint="#D4D4D4"
-            android:src="@drawable/vector_pen"
-            app:layout_constraintBottom_toBottomOf="@+id/btnDelete"
-            app:layout_constraintEnd_toStartOf="@+id/btnDelete"
-            app:layout_constraintTop_toTopOf="@+id/btnDelete"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <ImageButton
-            android:id="@+id/btnDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:backgroundTint="@android:color/holo_red_dark"
-            android:src="@drawable/vector_cross"
-            app:layout_constraintBottom_toBottomOf="@+id/btnFinish"
-            app:layout_constraintEnd_toStartOf="@+id/btnFinish"
-            app:layout_constraintTop_toTopOf="@+id/btnFinish"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <ImageButton
-            android:id="@+id/btnFinish"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:backgroundTint="@android:color/holo_green_dark"
-            android:src="@drawable/vector_check"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
